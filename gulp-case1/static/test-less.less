@@ -1,0 +1,26 @@
+@import "extra.less";
+
+// 变量和运算符
+// 定义变量，使用运算符
+@nice-blue: #5B83AD;
+@light-bule: @nice-blue + #111;
+
+// 使用变量
+#header{
+	color: @light-bule;
+
+	.nav{
+		font-size: 20px;
+	}
+
+	.logo{
+		width: 200px;
+		height: 100px;
+		float: left;
+		background: #aaa;
+	}
+
+	a{
+		color: pink;
+	}
+}
