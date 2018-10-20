@@ -9,6 +9,13 @@ var minifycss = require('gulp-minify-css');				//压缩CSS
 var autoprefixer = require('gulp-autoprefixer');	//CSS自动添加前缀
 var less = require('gulp-less');									//LESS编译
 var imagemin = require('gulp-imagemin');					//图片压缩
+var del = require('del');													//清空文件夹
+var connect = require('gulp-connect');						//在本地开启一个websocket服务，使用liveReload实现实时更新，推荐使用html-watchhtml-connect写法
+var htmlmin = require('gulp-htmlmin');						//可以压缩页面javascript、css，去除页面空格、注释，删除多余属性等操作
+var rev = require('gulp-rev-append');							//使用gulp-rev-append给页面的引用添加版本号，清除页面引用缓存
+var watch = require('gulp-watch');								//监听文件的变化，配合connect实现服务自动刷新
+var plumber = require('gulp-plumber');						//实时更新错误不会导致终端gulp运行开启的服务断开
+var rename = require('gulp-rename');							//重命名
 
 // 错误日志
 var handleError = function (err) {
@@ -177,15 +184,16 @@ gulp.task('watchcopy', function(){
 	});
 });
 
+// 清空文件夹
+gulp.task('clean', del.bind(null, ['dist/*']));
 
-gulp.task('default', [
-	// build
-	'uglifyjs', 'minifycss', 'lesscss', 'image', 'copy',
-	// watch
-	'watchjs', 'watchcss', 'watchless', 'watchimage', 'watchcopy'
-	]
-)
-
+// gulp.task('default', [
+// 	// build
+// 	'uglifyjs', 'minifycss', 'lesscss', 'image', 'copy',
+// 	// watch
+// 	'watchjs', 'watchcss', 'watchless', 'watchimage', 'watchcopy'
+// 	]
+// )
 
 // 配置控制台输出颜色
 // gulp.task('default', function(){
@@ -194,3 +202,74 @@ gulp.task('default', [
 // 	gutil.log(gutil.colors.green('Success Msg : ') + 'finish')
 // });
 
+
+
+
+
+	// //实时刷新1
+	// //本地服务
+	// gulp.task('connect', function(){
+	// 	connect.server({
+	// 		livereload: true
+	// 	});
+	// });
+	// // 要自动更新的html文件
+	// gulp.task('html', function(){
+	// 	gulp.src('src/html/**/*.html')
+	// 			.pipe(connect.reload());
+	// });
+	// // 监听html文件改变
+	// gulp.task('watchhtml', function(){
+	// 	gulp.watch('src/html/**/*.html', ['html']);
+	// });
+	// gulp.task('default', ['html', 'watchhtml', 'connect']);
+
+
+
+
+
+	// // 实时刷新2
+	// // 压缩html，去除页面空格、注释，删除多余属性等
+	// gulp.task('buildHtmlmin', function () {
+	// 	var options = {
+	// 		removeComments: true,//清除HTML注释
+	// 		collapseWhitespace: true,//压缩HTML
+	// 		collapseBooleanAttributes: true,//省略布尔属性的值 <input checked="true"/> ==> <input />
+	// 		removeEmptyAttributes: true,//删除所有空格作属性值 <input id="" /> ==> <input />
+	// 		removeScriptTypeAttributes: true,//删除<script>的type="text/javascript"
+	// 		removeStyleLinkTypeAttributes: true,//删除<style>和<link>的type="text/css"
+	// 		minifyJS: true,//压缩页面JS
+	// 		minifyCSS: true//压缩页面CSS
+	// 	};
+	// 	gulp.src('src/html/**/*.html')
+	// 			.pipe(htmlmin(options))
+	// 			.pipe(rename({
+	// 				suffix: '-min'
+	// 			}))
+	// 			.pipe(gulp.dest('dist/html'));
+	// })
+	// // 添加版本号
+	// gulp.task('buildRev', function(){
+	// 	gulp.src('src/html/**/index.html')
+	// 			.pipe(rev())
+	// 			.pipe(gulp.dest('dist/html'))
+	// });
+	// // 本地服务
+	// gulp.task('connect', function(){
+	// 	connect.server({
+	// 		livereload: true,
+	// 		port: 8888
+	// 	});
+	// });
+	// // 要自动更新的html文件
+	// gulp.task('html', function(){
+	// 	gulp.src('src/html/**/*.html')
+	// 			.pipe(rev())
+	// 			.pipe(gulp.dest('dist/html'))
+	// 			.pipe(connect.reload());
+	// });
+	// // 监听html文件改变
+	// gulp.task('watchhtml', function(){
+	// 	gulp.watch('src/html/**/*.html', ['html']);
+	// });
+	// gulp.task('default', ['html', 'watchhtml', 'connect']);
